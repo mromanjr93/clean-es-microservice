@@ -1,0 +1,62 @@
+version: '3.4'
+
+services:
+  customer.api:
+    image: ${DOCKER_REGISTRY-}customerapi
+    build:
+      context: .
+      dockerfile: src/CustomerService/Customer.Api/Dockerfile
+    depends_on:
+      - customer.db
+      - eventstore
+    networks:
+      - customer
+      - shared
+
+  booking.api:
+    image: ${DOCKER_REGISTRY-}bookingapi
+    build:
+      context: .
+      dockerfile: src/BookingService/Booking.Api/Dockerfile
+    depends_on:
+      - booking.db
+      - eventstore
+    networks:
+      - booking
+      - shared
+
+  customer.db:
+    image: mcr.microsoft.com/mssql/server:2017-latest
+    environment:
+      - SA_PASSWORD=Pass@word
+      - ACCEPT_EULA=Y
+    ports:
+      - "5434:1433"
+    networks:
+      - customer
+
+  booking.db:
+    image: mcr.microsoft.com/mssql/server:2017-latest
+    environment:
+      - SA_PASSWORD=Pass@word
+      - ACCEPT_EULA=Y
+    ports:
+      - "5435:1433"
+    networks:
+      - booking
+
+  eventstore:
+     image: eventstore/eventstore
+     ports:
+      - "8080:2113"
+      - "1113:1113"
+     networks:
+      - shared
+
+networks:
+  shared:
+    driver: bridge
+  booking:
+    driver: bridge
+  customer:
+    driver: bridge

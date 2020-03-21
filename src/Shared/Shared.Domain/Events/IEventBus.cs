@@ -7,6 +7,6 @@ namespace Shared.Domain.Events
 {
     public interface IEventBus
     {
-        Task RaiseEvent<T>(T @event) where T : DomainEvent;
+        Task RaiseEvent<T,TAggregateId>(T @event) where T : IDomainEvent<TAggregateId>;
     }
 }

@@ -18,21 +18,17 @@ namespace Shared.Data.EventStore
         {
             _conn = conn;
         }
-        public IList<StoredEvent> All(Guid aggregateId)
+        public IList<StoredEvent<TAggregateId>> All<TAggregateId>(Guid aggregateId)
         {
-            return new List<StoredEvent>();
+            return new List<StoredEvent<TAggregateId>>();
         }
 
-        public void Dispose()
-        {
-        }
-
-        public async Task<AppendResult> Store(StoredEvent @event)
+        public async Task<AppendResult> Store<TAggregateId>(StoredEvent<TAggregateId> @event)
         {
             try
             {
                 var eventData = new EventData(
-                    @event.AggregateId,
+                    @event.EventId,
                     @event.GetType().AssemblyQualifiedName,
                     true,
                     Serialize(@event),
@@ -51,13 +47,13 @@ namespace Shared.Data.EventStore
             }
         }
 
-        private DomainEvent Deserialize(string eventType, byte[] data)
+        private DomainEvent<TAggregateId> Deserialize<TAggregateId>(string eventType, byte[] data)
         {
             JsonSerializerSettings settings = new JsonSerializerSettings { ContractResolver = new PrivateSetterContractResolver() };
-            return (DomainEvent)JsonConvert.DeserializeObject(Encoding.UTF8.GetString(data), Type.GetType(eventType), settings);
+            return (DomainEvent<TAggregateId>)JsonConvert.DeserializeObject(Encoding.UTF8.GetString(data), Type.GetType(eventType), settings);
         }
 
-        private byte[] Serialize(DomainEvent @event)
+        private byte[] Serialize<TAggregateId>(IDomainEvent<TAggregateId> @event)
         {
             return Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(@event));
         }

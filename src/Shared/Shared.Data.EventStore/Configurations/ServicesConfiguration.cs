@@ -15,8 +15,10 @@ namespace Shared.Data.EventStore.Configurations
             services.AddScoped<IEventStore, EventStore>();
             services.AddScoped<IEventStoreRepository, EventStoreRepository>();
 
+            var connection= EventStoreConnection.Create(new Uri(connectionString));
 
-            services.AddSingleton<IEventStoreConnection>(p => EventStoreConnection.Create(new Uri(connectionString)));
+            connection.ConnectAsync().Wait();
+            services.AddSingleton<IEventStoreConnection>(p => connection);
 
             return services;
         }

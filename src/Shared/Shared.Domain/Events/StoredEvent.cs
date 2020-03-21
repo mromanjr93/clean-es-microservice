@@ -2,9 +2,9 @@
 
 namespace Shared.Domain.Events
 {
-    public class StoredEvent : DomainEvent
+    public class StoredEvent<TAggregateId> : DomainEvent<TAggregateId>
     {
-        public StoredEvent(DomainEvent @event)
+        public StoredEvent(IDomainEvent<TAggregateId> @event)
         {
             Id = Guid.NewGuid();
             AggregateId = @event.AggregateId;
@@ -15,6 +15,6 @@ namespace Shared.Domain.Events
 
         public Guid Id { get; private set; }
 
-        public DomainEvent Event { get; private set; }
+        public IDomainEvent<TAggregateId> Event { get; private set; }
     }
 }

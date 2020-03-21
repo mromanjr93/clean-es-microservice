@@ -13,12 +13,12 @@ namespace Shared.Domain.Events
             _mediator = mediator;
             _eventStore = eventStore;
         }
-        public Task RaiseEvent<T>(T @event) where T : DomainEvent
+        public async Task RaiseEvent<T, TAggregateId>(T @event) where T : IDomainEvent<TAggregateId>
         {
             if (!@event.MessageType.Equals("DomainNotification"))
-                _eventStore?.Save(@event);
+                await _eventStore?.Save<T, TAggregateId>(@event);
 
-            return _mediator.Publish(@event);
+            await _mediator.Publish(@event);
         }
     }
 }

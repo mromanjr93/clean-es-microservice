@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Shared.Domain.Events;
 
 namespace Shared.Data.EventStore
@@ -12,11 +13,11 @@ namespace Shared.Data.EventStore
             _eventStoreRepository = eventStoreRepository;
         }
 
-        public void Save<T>(T @event) where T : DomainEvent
+        public async Task<AppendResult> Save<T, TAggregateId>(T @event) where T : IDomainEvent<TAggregateId>
         {
-            var storedEvent = new StoredEvent(@event);
+            var storedEvent = new StoredEvent<TAggregateId>(@event);
 
-            _eventStoreRepository.Store(storedEvent);
+            return await _eventStoreRepository.Store(storedEvent);
         }
     }
 }

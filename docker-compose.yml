@@ -6,6 +6,9 @@ services:
     build:
       context: .
       dockerfile: src/CustomerService/Customer.Api/Dockerfile
+    ports:
+      - "8081:80"
+      - "8082:443"
     depends_on:
       - customer.db
       - eventstore
@@ -18,6 +21,9 @@ services:
     build:
       context: .
       dockerfile: src/BookingService/Booking.Api/Dockerfile
+    ports:
+      - "8083:80"
+      - "8084:443"
     depends_on:
       - booking.db
       - eventstore

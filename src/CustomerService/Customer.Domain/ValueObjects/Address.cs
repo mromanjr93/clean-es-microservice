@@ -1,12 +1,20 @@
-﻿using Shared.Domain.Entity;
-using System;
+﻿using System;
+using Shared.Domain.ValueObjects;
 
 namespace Customer.Domain.ValueObjects
 {
     public class Address : ValueObject<Address>
     {
-        public Address()
+        public Address(
+            string streetAddress,
+            string number,
+            string neighboorhood,
+            string postalCode)
         {
+            StreetAddress = streetAddress;
+            Number = number;
+            Neighborhood = neighboorhood;
+            PostalCode = postalCode;
 
         }
 
@@ -17,15 +25,5 @@ namespace Customer.Domain.ValueObjects
         public string Neighborhood { get; private set; }
 
         public string PostalCode { get; private set; }
-
-        protected override bool EqualsCore(Address other)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override int GetHashCodeCore()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

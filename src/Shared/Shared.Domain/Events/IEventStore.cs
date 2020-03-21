@@ -1,7 +1,9 @@
-﻿namespace Shared.Domain.Events
+﻿using System.Threading.Tasks;
+
+namespace Shared.Domain.Events
 {
     public interface IEventStore
     {
-        void Save<T>(T @event) where T : DomainEvent;
+        Task<AppendResult> Save<T, TAggregateId>(T @event) where T : IDomainEvent<TAggregateId>;
     }
 }

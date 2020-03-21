@@ -4,10 +4,10 @@ using System.Threading.Tasks;
 
 namespace Shared.Domain.Events
 {
-    public interface IEventStoreRepository : IDisposable
+    public interface IEventStoreRepository
     {
-        Task<AppendResult> Store(StoredEvent theEvent);
+        Task<AppendResult> Store<TAggregateId>(StoredEvent<TAggregateId> theEvent);
 
-        IList<StoredEvent> All(Guid aggregateId);
+        IList<StoredEvent<TAggregateId>> All<TAggregateId>(Guid aggregateId);
     }
 }

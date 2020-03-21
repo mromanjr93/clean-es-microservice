@@ -11,9 +11,11 @@ namespace Customer.Api.Configurations
         {
             services.AddControllers()
                     .AddJsonOptions(opts =>
-               {
-                   opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-               });
+                    {
+                        opts.JsonSerializerOptions.IgnoreNullValues = true;
+                        opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                    });
+
             services.AddHealthChecks();
             services.AddRouting(options => options.LowercaseUrls = true);
             services.AddApiVersion();

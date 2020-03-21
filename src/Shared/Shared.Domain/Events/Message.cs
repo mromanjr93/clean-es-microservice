@@ -16,5 +16,10 @@ namespace Shared.Domain.Events
             MessageType = GetType().Name;
             AggregateVersion = -1;
         }
+
+        public void IncreaseVersion()
+        {
+            AggregateVersion++; 
+        }
     }
 }

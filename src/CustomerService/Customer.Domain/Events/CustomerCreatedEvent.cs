@@ -3,9 +3,9 @@ using Shared.Domain.Events;
 
 namespace Customer.Domain.Events
 {
-    public class CreatedCustomerEvent : DomainEvent
+    public class CustomerCreatedEvent : DomainEvent<Guid>
     {
-        public CreatedCustomerEvent(Guid id, string name, DateTime birthdate)
+        public CustomerCreatedEvent(Guid id, string name, DateTime birthdate)
         {
             Id = id;
             Name = name;
@@ -18,5 +18,7 @@ namespace Customer.Domain.Events
         public string Name { get; }
 
         public DateTime Birthdate { get; }
+
+
     }
 }

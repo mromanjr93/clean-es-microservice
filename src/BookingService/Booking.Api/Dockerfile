@@ -1,22 +1,27 @@
-#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
 
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
-WORKDIR /app
-EXPOSE 80
-EXPOSE 443
+WORKDIR /home/app
 
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
-WORKDIR /src
-COPY ["src/BookingService/Booking.Api/Booking.Api.csproj", "src/BookingService/Booking.Api/"]
-RUN dotnet restore "src/BookingService/Booking.Api/Booking.Api.csproj"
-COPY . .
-WORKDIR "/src/src/BookingService/Booking.Api"
-RUN dotnet build "Booking.Api.csproj" -c Release -o /app/build
+COPY ./*.sln ./
+COPY ./src/BookingService/*/*.csproj ./BookingService/
+COPY ./src/Shared/*/*.csproj ./Shared/
+COPY ./NuGet.config ./
 
-FROM build AS publish
-RUN dotnet publish "Booking.Api.csproj" -c Release -o /app/publish
 
-FROM base AS final
-WORKDIR /app
-COPY --from=publish /app/publish .
+RUN for file in $(ls BookingService/*.csproj); do mkdir -p ./src/${file%.*}/ && mv $file ./src/${file%.*}/; done
+RUN for file in $(ls Shared/*.csproj); do mkdir -p ./src/${file%.*}/ && mv $file ./src/${file%.*}/; done
+
+RUN dotnet restore --configfile NuGet.config /home/app/src/BookingService/Booking.Api/Booking.Api.csproj
+ 
+COPY . .	
+
+RUN dotnet build -c Release /home/app/src/BookingService/Booking.Api/Booking.Api.csproj && \
+	dotnet publish -c Debug -o /publish /home/app/src/BookingService/Booking.Api/Booking.Api.csproj
+
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
+
+WORKDIR /publish
+
+COPY --from=build /publish .
+
 ENTRYPOINT ["dotnet", "Booking.Api.dll"]

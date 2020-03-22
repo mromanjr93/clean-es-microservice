@@ -11,7 +11,6 @@ COPY ./NuGet.config ./
 RUN for file in $(ls CustomerService/*.csproj); do mkdir -p ./src/${file%.*}/ && mv $file ./src/${file%.*}/; done
 RUN for file in $(ls Shared/*.csproj); do mkdir -p ./src/${file%.*}/ && mv $file ./src/${file%.*}/; done
 
-RUN ls src/CustomerService/
 RUN dotnet restore --configfile NuGet.config /home/app/src/CustomerService/Customer.Api/Customer.Api.csproj
  
 COPY . .	

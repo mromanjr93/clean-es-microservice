@@ -26,7 +26,7 @@ namespace Shared.Infra.MessageBroker.Publishers
                     await producer.ProduceAsync(topic, new Message<Null, string>
                     {
                         Value = JsonConvert.SerializeObject(message)
-                    }).GetAwaiter().GetResult();
+                    });
                 }
             }
             catch (Exception e)
